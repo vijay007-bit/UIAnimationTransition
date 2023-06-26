@@ -9,31 +9,49 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var planeImage: UIImageView!
     
     var animationView: UIView!
     var newView: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        animationView = UIView(frame: view.bounds)
-        animationView.frame = view.bounds
-        view.addSubview(animationView)
-        newView = UIImageView(image: UIImage(named: "sky")!)
-        newView.center = animationView.center
-          self.animationView.addSubview(newView)
     }
     
     override func viewDidAppear(_ animated: Bool) {
       super.viewDidAppear(animated)
       //create new view
+    planeDepart()
+     
+    }
     
-      //add the new view via transition
-      UIView.transition(with: animationView,
-        duration: 5,
-        options: [.curveEaseOut, .transitionFlipFromRight],
+    func planeDepart() {
+      let originalCenter = planeImage.center
+        UIView.animateKeyframes(withDuration: 5, delay: 0.0, options: [.repeat],
         animations: {
-          self.newView.removeFromSuperview()
-        },
+          UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.25,
+      animations: {
+        self.planeImage.center.x += 80.0
+        self.planeImage.center.y -= 10.0
+      })
+          UIView.addKeyframe(withRelativeStartTime: 0.1, relativeDuration: 0.4) {
+            self.planeImage.transform = CGAffineTransform(rotationAngle: -.pi / 8)
+          }
+          
+          UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.25) {
+              self.planeImage.center.x += 100.0
+              self.planeImage.center.y -= 50.0
+              self.planeImage.alpha = 0.0
+          }
+            UIView.addKeyframe(withRelativeStartTime: 0.51, relativeDuration: 0.01) {
+              self.planeImage.transform = .identity
+              self.planeImage.center = CGPoint(x: 0.0, y: originalCenter.y)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.55, relativeDuration: 0.45) {
+              self.planeImage.alpha = 1.0
+              self.planeImage.center = originalCenter
+            }
+    },
         completion: nil
       )
     }
